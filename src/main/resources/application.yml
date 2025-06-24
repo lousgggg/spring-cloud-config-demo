@@ -1,11 +1,23 @@
 server:
-  port: 8080
+  port: 9201 # 默认8888 如果配置为其它端口，则客户端新增/修改配置文件需为 bootstrap.yml
 
 eureka:
-  instance:
-    hostname: localhost
   client:
-    register-with-eureka: false
-    fetch-registry: false
-    service-url:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://localhost:8080/eureka/
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    health-check-url-path: /actuator/health
+
+#配置当前服务的名称
+spring:
+  profiles:
+    active: native #设置为本地启动的方式，而不是通过git
+  application:
+    name: config-server    #向注册中心进行注册的服务名
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config   # 配置文件所在目录
